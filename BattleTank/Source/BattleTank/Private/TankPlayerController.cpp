@@ -32,7 +32,7 @@ void ATankPlayerController::AimTowardsCrosshair()
 	if (!MyTank) { return; }
 	FVector HitLocation;
 	if (GetSightRayHitLocation(HitLocation)) {
-		UE_LOG(LogTemp, Warning, TEXT("HitLocation: %s"), *HitLocation.ToString());
+		//UE_LOG(LogTemp, Warning, TEXT("HitLocation: %s"), *HitLocation.ToString());
 	}
 }
 
@@ -40,7 +40,16 @@ bool ATankPlayerController::GetSightRayHitLocation(OUT FVector &HitLocation) con
 {
 	int32 ViewportSizeX, ViewportSizeY;
 	GetViewportSize(OUT ViewportSizeX, OUT ViewportSizeY);
-	FVector2D vector = FVector2D(ViewportSizeX * CrossHairXLocation, ViewportSizeY * CrossHairYLocation);
+	FVector2D Screen = FVector2D(ViewportSizeX * CrossHairXLocation, ViewportSizeY * CrossHairYLocation);
+	FVector WorldLocation, WorldDirection;
+	if (DeprojectScreenPositionToWorld(Screen.X, Screen.Y, OUT WorldLocation, OUT WorldDirection)) {
+		UE_LOG(LogTemp, Warning, TEXT("Look direction: %s"), *WorldDirection.ToString());
+	}
 	HitLocation = FVector(1.0f);
 	return true;
+}
+
+bool ATankPlayerController::GetLookDirection()
+{
+
 }
