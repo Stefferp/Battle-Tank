@@ -38,29 +38,34 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 void UTankAimingComponent::AimTank(FVector Target, float LaunchSpeed)
 {
 	if (!Barrel) { return; }
-	FVector BarrelLocation = Barrel->GetComponentLocation();
+
 	FVector LaunchVelocity;
 	FVector StartLocation = Barrel->GetComponentLocation();
-
-	UGameplayStatics::SuggestProjectileVelocity(
+	bool bHaveAimSolution = UGameplayStatics::SuggestProjectileVelocity(
 		this,
 		LaunchVelocity,
 		StartLocation,
 		Target,
 		LaunchSpeed,
-		false,
-		0,
-		0,
-		ESuggestProjVelocityTraceOption::DoNotTrace,
-		FCollisionResponseParams::DefaultResponseParam,
-		TArray<AActor*>(),
-		false
+		ESuggestProjVelocityTraceOption::DoNotTrace
 	);
-
-	UE_LOG(LogTemp, Warning, TEXT("%s aiming at %s from %s"), *GetName(), *Target.ToString(), *BarrelLocation.ToString());
+	if (bHaveAimSolution) {
+		FVector AimDirection = LaunchVelocity.GetSafeNormal();
+		MoveBarrelTowards(AimDirection);
+		//UE_LOG(LogTemp, Warning, TEXT("Aiming at %s"), *AimDirection.ToString())
+	}
 }
 
 void UTankAimingComponent::SetBarrelReference(UStaticMeshComponent* BarrelToSet)
 {
 	Barrel = BarrelToSet;
+}
+
+void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
+{
+	FRotator BarrelRotator = Barrel->GetForwardVector().Rotation();
+	FRotator AimAsRotator = AimDirection.Rotation();
+	FRotator DeltaRotator = AimAsRotator - BarrelRotator;
+
+	//move the barrel at its max speed
 }
