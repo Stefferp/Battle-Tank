@@ -26,6 +26,9 @@ public:
 
 	void AimTank(FVector Target);
 
+	void SetBarrelReference(UStaticMeshComponent* BarrelToSet);
 		
+private:
+	UStaticMeshComponent * Barrel = nullptr;
 	
 };
