@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankAimingComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Runtime/Core/Public/Containers/Array.h"
 #include "Components/StaticMeshComponent.h" 
 
 
@@ -33,9 +35,28 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
-void UTankAimingComponent::AimTank(FVector Target)
+void UTankAimingComponent::AimTank(FVector Target, float LaunchSpeed)
 {
+	if (!Barrel) { return; }
 	FVector BarrelLocation = Barrel->GetComponentLocation();
+	FVector LaunchVelocity;
+	FVector StartLocation = Barrel->GetComponentLocation();
+
+	UGameplayStatics::SuggestProjectileVelocity(
+		this,
+		LaunchVelocity,
+		StartLocation,
+		Target,
+		LaunchSpeed,
+		false,
+		0,
+		0,
+		ESuggestProjVelocityTraceOption::DoNotTrace,
+		FCollisionResponseParams::DefaultResponseParam,
+		TArray<AActor*>(),
+		false
+	);
+
 	UE_LOG(LogTemp, Warning, TEXT("%s aiming at %s from %s"), *GetName(), *Target.ToString(), *BarrelLocation.ToString());
 }
 
