@@ -19,5 +19,5 @@ public:
 
 private:
 	UPROPERTY(EditAnywhere)
-	float RotationDegreesPerSecond = 15; //sensible default
+	float RotationDegreesPerSecond = 25; //sensible default
 };
