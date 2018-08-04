@@ -5,7 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Runtime/Core/Public/Containers/Array.h"
 #include "Components/StaticMeshComponent.h" 
-
+#include "Engine/World.h"
 
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
@@ -39,7 +39,6 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 void UTankAimingComponent::AimTank(FVector Target, float LaunchSpeed)
 {
 	if (!Barrel) { return; }
-
 	FVector LaunchVelocity;
 	FVector StartLocation = Barrel->GetComponentLocation();
 	bool bHaveAimSolution = UGameplayStatics::SuggestProjectileVelocity(
@@ -48,12 +47,20 @@ void UTankAimingComponent::AimTank(FVector Target, float LaunchSpeed)
 		StartLocation,
 		Target,
 		LaunchSpeed,
+		false,
+		0,
+		0,
 		ESuggestProjVelocityTraceOption::DoNotTrace
 	);
 	if (bHaveAimSolution) {
 		FVector AimDirection = LaunchVelocity.GetSafeNormal();
 		MoveBarrelTowards(AimDirection);
-		//UE_LOG(LogTemp, Warning, TEXT("Aiming at %s"), *AimDirection.ToString())
+		float Time = GetWorld()->GetTimeSeconds();
+		UE_LOG(LogTemp, Warning, TEXT("%f: Aiming at %s"), Time, *AimDirection.ToString())
+	}
+	else {
+		float Time = GetWorld()->GetTimeSeconds();
+		UE_LOG(LogTemp, Warning, TEXT("%f: Nothing found"), Time)
 	}
 }
 

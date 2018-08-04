@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Tank.h"
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "TankAIController.generated.h"
@@ -20,7 +19,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	ATank* MyTank = nullptr;
+	class ATank* MyTank = nullptr;
 	ATank* PlayerTank = nullptr;
 	ATank* GetControlledTank() const;
 	ATank* GetPlayerTank() const;
